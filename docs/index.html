@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; form-action 'self'">
+<meta name="description" content="A free, offline tool for garment export merchandisers in India and the Philippines: schedule every buyer order backwards from its ship date, see the critical path and the slack, and find out which orders cannot be made on time before you accept them.">
+<title>Apparel export time and action calendar for garment merchandisers · Open MSME</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script src="assets/theme-init.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/accent.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span class="brand"><span class="dot"></span> Time &amp; Action Calendar <span class="tag">Open MSME</span></span>
+    <span class="sp"></span>
+    <a class="home" href="https://sreenivas-sadhu-prabhakara.github.io/openmsme/">All tools</a>
+    <button class="themer" type="button" data-themer>Theme</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow">Textiles, apparel &amp; handloom · India and the Philippines</p>
+    <h1>Apparel export time and action calendar for garment merchandisers</h1>
+    <p class="lede">A garment export order is a chain of deadlines, and one quiet slip at the front of it becomes an airfreight bill at the back. Give each order its purchase-order date and its ship date and this works the whole chain out backwards, tells you which chain of milestones has no slack in it, and names the single milestone that is threatening delivery today.</p>
+    <div class="who">
+      <span class="pill">Export merchandisers and production planners</span>
+      <span class="pill">Garment units juggling many buyer POs</span>
+      <span class="pill">Critical-path scheduling</span>
+      <span class="pill">One binary, no internet</span>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="card">
+      <h2>The question a planner cannot answer by eye</h2>
+      <div class="result-primary">
+        <div class="k">A 30 April 2027 ship date. The last day the order could be placed:</div>
+        <div class="v">23 Jan 2027</div>
+        <div class="sub">On a six-day week with no holidays. Change the working week and the holiday list and that date moves — which is the whole problem.</div>
+      </div>
+      <table class="breakdown">
+        <thead><tr><th>Same order, same ship date</th><th class="num">Order by</th><th class="num">Working days</th></tr></thead>
+        <tbody>
+          <tr><td>Six-day week, no holidays</td><td class="num">23 Jan 2027</td><td class="num">130</td></tr>
+          <tr><td>Five-day week, no holidays</td><td class="num">12 Jan 2027</td><td class="num">109</td></tr>
+          <tr class="sub"><td>Five-day week, one week shut at the end of March</td><td class="num">5 Jan 2027</td><td class="num">104</td></tr>
+          <tr class="total"><td>Days of planning lost to the calendar alone</td><td class="num">18</td><td class="num">&minus;26</td></tr>
+        </tbody>
+      </table>
+      <p class="note">Figures from the tool's own worked example on the lead times it ships with. Eighteen days of difference, from nothing but the working week and one shutdown — and nobody notices until the fabric is late.</p>
+    </section>
+  </div>
+
+  <div class="prose">
+
+    <h2>What it does</h2>
+    <p>You enter an order: the buyer, the style, the quantity, the date the purchase order was placed and the date the goods have to be on board. From that it works out, for every milestone in the chain:</p>
+    <ul>
+      <li><strong>The date it has to be finished by.</strong> Scheduled backwards from the ship date, through the lead times and the working calendar, so the dates account for your weekly off and your holidays instead of pretending every day is a working day.</li>
+      <li><strong>Whether it is on the critical path.</strong> The chain of milestones with no slack in it, traced from the milestone that sets the earliest possible ship date back through whatever is holding each one up. Lose a day anywhere on that chain and you lose a day off the ship date.</li>
+      <li><strong>How much slack it has.</strong> In the milestone's own unit: working days for a factory stage, calendar days for transit, because that is the unit in which the days can actually be spent.</li>
+      <li><strong>Whether the order can be made at all.</strong> Counted forwards from the purchase-order date, if the chain lands past the ship date the order is not late — it was never possible. The tool says so on the first screen, and by how many days it is short.</li>
+      <li><strong>What one slip did to everything behind it.</strong> Record the date a milestone actually finished and the inspection, the ex-factory handover, the inland transit and the vessel cut-off all move, and the projected on-board date moves with them.</li>
+      <li><strong>Which order to worry about across the whole book.</strong> Every order on one board, worst first, each one reduced to its status, its projected ship date and the single milestone to chase.</li>
+    </ul>
+
+    <h2>Who it's for</h2>
+    <p>The merchandiser holding eight buyer POs at once in a Tiruppur knitwear unit, a Noida woven house or a Cavite garment factory. The production planner who has to say today whether a 30 April shipment is still alive. The owner who wants to know, before accepting an order, whether it can physically be made in the time the buyer has given.</p>
+    <p>It is for the person doing the planning, not for an IT department. One file to run, no account, no subscription, no server anywhere.</p>
+
+    <h2>The scheduling it implements</h2>
+    <p><strong>There is no regulation here.</strong> No law sets a sewing lead time and no authority publishes a time-and-action standard. What this implements is ordinary critical-path method, applied to the stage model a garment export order actually runs through, with working-day arithmetic over a calendar you control. Everything below is arithmetic and trade practice, stated so you can check it.</p>
+
+    <h3>Three passes over the chain</h3>
+    <p><strong>Backwards from the ship date.</strong> The last milestone finishes on the ship date. Every milestone before it finishes on the last day it can and still leave each of its successors a full lead time. A milestone must finish before its successors start — there is no overlap. Those are the <em>planned</em> dates, and they are the sheet that goes out to the floor and to the buyer.</p>
+    <p><strong>Forwards from the purchase-order date.</strong> The same chain counted the other way gives the earliest each milestone could run. The difference between the two is that milestone's float. If the forward pass lands past the ship date, the order cannot be made in the time it has — that figure is reported as the shortfall.</p>
+    <p><strong>Forwards again from what actually happened.</strong> Where a completion date has been recorded it is used exactly as entered, even on a day the factory was shut, because a shift may well have run and the tool's job is to record rather than correct. Everything after it is pushed to the first day it can now run, and no unfinished work is allowed to sit in the past.</p>
+
+    <h3>Why the critical path is traced and not picked out by float</h3>
+    <p>A garment chain mixes two kinds of day. Cutting, sewing and finishing stop for the weekly off and for a holiday; mill production, inland transit and a vessel at sea do not. That means a span counted in working days picks up a calendar day here and there as it snaps over a closed day, and the milestones with the <em>least</em> float are then not a connected chain at all — on the shipped chain they come out as a scattering of twelve milestones with gaps in the middle, which is worse than useless.</p>
+    <p>So the path is traced instead: start at the milestone that sets the earliest possible ship date and walk back, at each step to the predecessor whose finish is the reason that milestone cannot start any sooner. The result is always one connected chain from a milestone that waits on nothing to the one the ship date hangs on. On the shipped chain it runs:</p>
+    <pre><code>PO → Lab dip → Fabric in-house → PP approval → Cutting
+   → Sewing → Finishing → Final inspection → Ex-factory
+   → Inland transit → Vessel cut-off → On board</code></pre>
+    <p>Fabric booking, the trims order, the fit sample and the trims arriving are <em>not</em> on it. They run beside the long pole and they have real slack — which is exactly the information a flat Gantt chart destroys by drawing everything as equally urgent.</p>
+
+    <h3>A backward plan has no spare days in it</h3>
+    <p>This is the part people get wrong, so it is worth saying plainly. Every date in a backward-scheduled plan is a <strong>last possible</strong> date. A milestone that finishes a day after its own date moves the ship date by a day. It does not come out of some reserve, because there is no reserve: the slack figure tells you how much cushion the order was <em>booked</em> with — the gap between the earliest it could be made and the day it is due — not how much you can afford to lose at any one milestone.</p>
+    <p>The one exception is the days the factory is shut. If sewing cannot start until Friday whatever happens, because Wednesday and Thursday are holidays and Sunday is the weekly off, then cutting finishing two days past its own date costs nothing. The tool works that out and reports the order as at risk rather than late, because something has gone past its date even though the ship date still holds. Telling those two situations apart is the whole reason for doing the arithmetic.</p>
+
+    <h3>Working days, holidays and month ends</h3>
+    <p>A weekly off is a set of weekdays, so a five-day week, a six-day week and a rotating off are all expressible. Holidays are a dated list you enter yourself. <strong>No holiday list is shipped</strong>: public holidays differ by country, by state and by district, factories declare their own, and a wrong list is worse than an empty one because it moves dates without anybody noticing. A holiday falling on the weekly off costs one day, not two. A milestone due today is not yet overdue; it becomes overdue the morning after.</p>
+    <p>The date arithmetic is tested across weekends, across runs of consecutive holidays, across month ends, across year ends and across the leap day in both directions — because 28 February is followed by the 29th in 2024 and by 1 March in 2026, and a plan that gets that wrong is wrong by a day for the rest of the season.</p>
+
+    <h2>The lead times it starts with</h2>
+    <p>The chain this build ships with has sixteen milestones. <strong>Every lead time in it is indicative</strong> — trade practice for a mid-volume woven or knit programme, not a rule, not anybody's published standard and not advice. They move with the buyer, the fabric, the season, the mill's order book and the shipping line. Every one of them is a named constant in one file and every one is editable in the tool.</p>
+    <table class="breakdown">
+      <thead><tr><th>Milestone</th><th class="num">Lead</th><th>Counted in</th><th>Waits on</th></tr></thead>
+      <tbody>
+        <tr><td>Purchase order placed</td><td class="num">1</td><td>working days</td><td>&mdash;</td></tr>
+        <tr><td>Lab-dip and strike-off approved</td><td class="num">10</td><td>working days</td><td>PO</td></tr>
+        <tr><td>Fabric booked with mill</td><td class="num">3</td><td>working days</td><td>PO</td></tr>
+        <tr><td>Trims and packaging ordered</td><td class="num">3</td><td>working days</td><td>PO</td></tr>
+        <tr><td>Fit sample approved</td><td class="num">12</td><td>working days</td><td>PO</td></tr>
+        <tr><td>Fabric in-house</td><td class="num">35</td><td>calendar days</td><td>Fabric booked, lab dip</td></tr>
+        <tr><td>Trims in-house</td><td class="num">25</td><td>calendar days</td><td>Trims ordered</td></tr>
+        <tr><td>Pre-production sample approved</td><td class="num">7</td><td>working days</td><td>Fit sample, fabric in</td></tr>
+        <tr><td>Cutting</td><td class="num">4</td><td>working days</td><td>Fabric in, PP approval</td></tr>
+        <tr><td>Sewing</td><td class="num">18</td><td>working days</td><td>Cutting, trims in</td></tr>
+        <tr><td>Finishing, packing and cartoning</td><td class="num">6</td><td>working days</td><td>Sewing</td></tr>
+        <tr><td>Final inspection</td><td class="num">2</td><td>working days</td><td>Finishing</td></tr>
+        <tr><td>Ex-factory</td><td class="num">1</td><td>working days</td><td>Final inspection</td></tr>
+        <tr><td>Inland transit to port</td><td class="num">3</td><td>calendar days</td><td>Ex-factory</td></tr>
+        <tr><td>Vessel and documentation cut-off</td><td class="num">2</td><td>calendar days</td><td>Inland transit</td></tr>
+        <tr class="sub"><td>On board</td><td class="num">1</td><td>calendar days</td><td>Vessel cut-off</td></tr>
+        <tr class="total"><td>Purchase order to on board, on a six-day week</td><td class="num">97</td><td>calendar days</td><td></td></tr>
+      </tbody>
+    </table>
+    <p>Notice the three milestones that start the day the purchase order lands — fabric booking, the trims order and the fit sample — and that bulk fabric waits on the lab-dip approval. That parallelism is what makes the slack figures worth anything. A chain drawn as one stage after another shows no float anywhere and is therefore wrong about which milestone matters.</p>
+    <p>The whole chain is one named structure. Copy it under a buyer's name, change the figures that buyer actually works to — three approval loops instead of two, a mill quoting fifty-five days instead of thirty-five, an extra wash-test report before bulk cutting — and point that buyer's orders at the copy. Nobody else's plan moves.</p>
+
+    <h2>Install &amp; run</h2>
+    <pre><code>git clone https://github.com/sreenivas-sadhu-prabhakara/apparel-export-time-action-t.git
+cd apparel-export-time-action-t
+
+# run it straight away
+go run .
+
+# or build the single binary and keep it
+go build -o apparel-export-time-action-t .
+./apparel-export-time-action-t
+
+# then open
+http://127.0.0.1:8080</code></pre>
+    <p>Two flags, both optional:</p>
+    <pre><code>./apparel-export-time-action-t -addr 127.0.0.1:9000 \
+    -data /Users/me/Documents/merchandising/orders.json</code></pre>
+    <p>It binds to the loopback address, so it is reachable only from the machine it runs on. It needs Go 1.25 to build and nothing at all to run.</p>
+
+    <h2>What it stores</h2>
+    <p>One plain JSON file on your own machine, at <code>./apparel-export-time-action-t-data.json</code> unless you point <code>-data</code> somewhere else. It holds the order book, the milestone chains, the working calendar and the completion dates you have recorded, and nothing else. It is written atomically — a temporary file, then a rename — so a power cut leaves the previous good file rather than half a file, and it is created readable by its owner only, because an order book carries your buyers' names and quantities.</p>
+    <p>Nothing leaves the machine. There is no telemetry, no analytics, no update check, no font or script loaded from anywhere, and no connection to any buyer portal, forwarder system or shipping line. You can read the data file in a text editor and back it up like any other file. A file that has been hand-edited into a state the tool cannot plan from is refused on the way in, with the reason, rather than quietly producing dates that do not add up.</p>
+
+    <h2>Features</h2>
+    <div class="featgrid">
+      <div class="feat">
+        <h3>Backward scheduling</h3>
+        <p>Enter the ship date and the whole chain falls out of it: sixteen milestone dates from the purchase order to the goods going on board.</p>
+      </div>
+      <div class="feat">
+        <h3>Critical path, traced</h3>
+        <p>One connected chain of milestones with no slack, not a scattering of the ones that happen to look tight.</p>
+      </div>
+      <div class="feat">
+        <h3>Slack per milestone</h3>
+        <p>In working days for a factory stage, calendar days for transit. The unit matters: three calendar days over a weekend is not three shifts.</p>
+      </div>
+      <div class="feat">
+        <h3>"This cannot be made"</h3>
+        <p>An order with nine weeks for a fourteen-week chain says so immediately, and says how many days short it is, before you confirm it.</p>
+      </div>
+      <div class="feat">
+        <h3>The knock-on, recomputed</h3>
+        <p>Record finishing a week late and the inspection, the ex-factory date, the transit and the vessel cut-off all move, and so does the projected on-board date.</p>
+      </div>
+      <div class="feat">
+        <h3>Your working week</h3>
+        <p>Five days, six days, or whatever your unit runs, plus a holiday list you keep yourself. Change either and every plan is worked out again.</p>
+      </div>
+      <div class="feat">
+        <h3>One milestone to chase</h3>
+        <p>Whatever is furthest behind, then whatever is on the critical path, then whatever is due soonest — with the owner's name beside it.</p>
+      </div>
+      <div class="feat">
+        <h3>A chain per buyer</h3>
+        <p>Copy the chain, change the lead times and the approval loops for that buyer, add a milestone they insist on, and leave everybody else's plan alone.</p>
+      </div>
+      <div class="feat">
+        <h3>The whole book, worst first</h3>
+        <p>Late orders at the top, then the ones at risk, with the pieces at risk totalled — the figure that decides whether to book airfreight.</p>
+      </div>
+      <div class="feat">
+        <h3>CSV out</h3>
+        <p>One order's time-and-action sheet, or the whole order book, as a file for the buyer, the factory or your own records.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><strong>What this tool is not.</strong> It does arithmetic on dates. It is not a production-planning system, not a capacity planner, and not advice. It does not know how many lines your unit has, whether the sewing lead time you entered is achievable at your output, or whether the mill will actually deliver on the date they quoted. Give it wrong lead times and it will give you wrong dates, confidently.</p>
+      <p><strong>The lead times it ships with are indicative and are not a standard.</strong> No regulator, buyer body or trade association publishes them; they are the commonest figures in the trade as a starting point, and they are wrong for somebody. Replace every one of them with figures from your own last few orders of that product for that buyer before you plan against them. The vessel cut-off and the transit time in particular come from your forwarder and your shipping line, and from nowhere else.</p>
+      <p><strong>There is no connection to any external system.</strong> Nothing here is checked against a buyer's portal, a forwarder's booking system or a carrier's schedule, and no sailing date is verified. A ship date you typed is whatever you typed.</p>
+    </div>
+
+    <details class="assumptions">
+      <summary>Assumptions, stated plainly</summary>
+      <ul>
+        <li>The plan is scheduled backwards from the ship date. The last milestone finishes on that date.</li>
+        <li>A milestone finishes before the next one starts. There is no overlap: a chain where sewing starts while cutting is still running should carry a shorter sewing lead time, or be split into two milestones.</li>
+        <li>A lead time counts its first day, so a one-day milestone finishes the day it starts.</li>
+        <li>A milestone counted in working days never starts or finishes on a day the factory is shut. One counted in calendar days can, because mills, lorries and vessels do not keep your weekly off.</li>
+        <li>The shipped working week is one day off, Sunday, and no holidays at all. Both are editable; neither is a claim about your factory.</li>
+        <li>A holiday falling on the weekly off costs one day, not two.</li>
+        <li>A recorded completion date is taken exactly as entered, including on a closed day.</li>
+        <li>A milestone due today is not yet overdue. It becomes overdue the morning after.</li>
+        <li>An order is called late when the goods are projected on board after the ship date, or when they could never have made it. A milestone past its date that the shutdown still covers makes the order at risk, not late.</li>
+        <li>An order is called at risk when it has three days of slack or fewer, or when something has already gone past its date. Three days is a judgement about how much warning you want, not a figure out of any rule book, and it is editable.</li>
+        <li>Without a purchase-order date the plan is still worked out, from the last day the order could have been placed, and no slack or feasibility figure is given.</li>
+        <li>Slack is measured from the purchase-order date: it is the cushion the order was booked with, not a reserve to be spent at a milestone.</li>
+      </ul>
+    </details>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Open MSME &middot; free tools for small businesses in India and the Philippines &middot; MIT licensed</span>
+    <span><a href="https://sreenivas-sadhu-prabhakara.github.io/openmsme/">All tools</a></span>
+  </div>
+</footer>
+
+<script src="assets/ui.js"></script>
+</body>
+</html>

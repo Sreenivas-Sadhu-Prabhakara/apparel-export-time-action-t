@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; form-action 'self'">
+<title>Time and action calendar for apparel export orders · Open MSME</title>
+<meta name="description" content="Plan every garment export order backwards from its ship date: milestone dates, the critical path, the slack on each milestone, and the one milestone to chase today.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/accent.css">
+<link rel="stylesheet" href="assets/app.css">
+<script src="assets/theme-init.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <span class="dot"></span>
+      <b>Open MSME</b>
+      <span class="tag">Time &amp; action</span>
+    </a>
+    <span class="sp"></span>
+    <button class="themer" data-themer type="button">Theme</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Textiles, apparel &amp; handloom · India and the Philippines</div>
+      <h1>Time and action calendar for apparel export orders</h1>
+      <p class="lede">Give an order its purchase-order date and its ship date. Every milestone from lab dip to on board is scheduled backwards from the ship date, the critical path and the slack are worked out, and the one milestone that threatens delivery is named.</p>
+      <div class="who">
+        <span class="pill">Export merchandisers and production planners</span>
+        <span class="pill">Critical-path scheduling</span>
+        <span class="pill">Runs on your own machine</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+
+    <!-- ------------------------------------------------------- the board -->
+    <section class="card" id="board-card">
+      <h2>Order book</h2>
+      <div class="tiles" id="tiles"></div>
+      <div class="seg" id="board-filter"></div>
+      <div class="tablewrap">
+        <table class="breakdown" id="board-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Ship</th>
+              <th class="num">Days</th>
+              <th>Status</th>
+              <th class="num">Late by</th>
+              <th class="num">Slack</th>
+              <th>Chase this</th>
+              <th class="num">Done</th>
+            </tr>
+          </thead>
+          <tbody id="board-body"></tbody>
+        </table>
+      </div>
+      <p class="hintline" id="board-note"></p>
+      <div class="btnrow">
+        <a class="btn ghost" id="x-board" href="/api/board.csv" download>Download the order book as CSV</a>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------- the open order -->
+    <section class="card" id="order-card" hidden>
+      <h2 id="order-title">Order</h2>
+      <div class="result-primary">
+        <div class="k" id="r-key">Projected on board</div>
+        <div class="v" id="r-value">&mdash;</div>
+        <div class="sub" id="r-sub"></div>
+      </div>
+      <div class="note bad" id="order-error" hidden></div>
+      <div id="order-warnings"></div>
+
+      <table class="breakdown facts">
+        <tbody>
+          <tr><td>Ship date</td><td class="num" id="f-ship">&mdash;</td></tr>
+          <tr><td>Purchase order placed</td><td class="num" id="f-po">&mdash;</td></tr>
+          <tr><td>Last day it could have been placed</td><td class="num" id="f-latest">&mdash;</td></tr>
+          <tr><td>Earliest it could go on board</td><td class="num" id="f-earliest">&mdash;</td></tr>
+          <tr><td>Working days in the plan</td><td class="num" id="f-working">&mdash;</td></tr>
+          <tr><td>Days the factory is shut inside it</td><td class="num" id="f-closed">&mdash;</td></tr>
+          <tr class="total"><td>Slack against the ship date</td><td class="num" id="f-slack">&mdash;</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="blockhead">Milestones</h2>
+      <p class="hintline">Every date below is the <strong>last</strong> day that milestone can run and still make the ship date. Record what actually happened and everything behind it is worked out again.</p>
+      <div class="tablewrap">
+        <table class="breakdown" id="plan-table">
+          <thead>
+            <tr>
+              <th>Milestone</th>
+              <th>Owner</th>
+              <th class="num">Lead</th>
+              <th>Planned</th>
+              <th class="num">Slack</th>
+              <th>Status</th>
+              <th>Projected</th>
+              <th>Actually finished</th>
+            </tr>
+          </thead>
+          <tbody id="plan-body"></tbody>
+        </table>
+      </div>
+      <p class="hintline" id="plan-note"></p>
+
+      <div class="btnrow">
+        <a class="btn ghost" id="x-plan" href="#" download>Download this plan as CSV</a>
+        <button class="btn ghost" id="edit-order" type="button">Edit this order</button>
+        <button class="btn ghost danger" id="delete-order" type="button">Remove this order</button>
+        <button class="btn ghost" id="close-order" type="button">Close</button>
+      </div>
+      <p class="hintline" id="order-status" role="status"></p>
+    </section>
+
+    <!-- ----------------------------------------------------- add an order -->
+    <section class="card" id="form-card">
+      <h2 id="form-title">Add an order</h2>
+      <div class="row2">
+        <div class="field">
+          <label for="i-buyer">Buyer</label>
+          <input type="text" id="i-buyer" placeholder="Northbridge Apparel">
+        </div>
+        <div class="field">
+          <label for="i-po">Purchase-order number</label>
+          <input type="text" id="i-po" placeholder="4471">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="i-style">Style</label>
+          <input type="text" id="i-style" placeholder="LS-TEE-220">
+        </div>
+        <div class="field">
+          <label for="i-product">Product <span class="hint">optional</span></label>
+          <input type="text" id="i-product" placeholder="Long sleeve jersey tee">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="i-qty">Quantity <span class="hint">pieces</span></label>
+          <input type="number" id="i-qty" min="0" step="1" inputmode="numeric" placeholder="4800">
+        </div>
+        <div class="field">
+          <label for="i-chain">Milestone chain</label>
+          <select id="i-chain"></select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="i-podate">Purchase-order date <span class="hint">when the order was confirmed</span></label>
+          <input type="date" id="i-podate">
+        </div>
+        <div class="field">
+          <label for="i-shipdate">Ship date <span class="hint">on board — the plan runs backwards from this</span></label>
+          <input type="date" id="i-shipdate">
+        </div>
+      </div>
+      <div class="field">
+        <label for="i-note">Note <span class="hint">optional</span></label>
+        <input type="text" id="i-note" placeholder="Buyer will not accept part shipment">
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" id="save-order" type="button">Add order</button>
+        <button class="btn ghost" id="cancel-order" type="button" hidden>Cancel</button>
+      </div>
+      <p class="hintline" id="form-status" role="status"></p>
+      <div class="note bad" id="form-error" hidden></div>
+    </section>
+
+    <!-- -------------------------------------------------- working calendar -->
+    <section class="card">
+      <h2>Working calendar</h2>
+      <p class="hintline">Factory stages are counted in working days. Transit and vessel stages are counted in calendar days, because a lorry and a ship do not keep your weekly off.</p>
+
+      <div class="field">
+        <label>Weekly off</label>
+        <div class="seg" id="weekly-off"></div>
+      </div>
+
+      <div class="field">
+        <label>Holidays <span class="hint">this is where a plan loses days quietly</span></label>
+        <div class="tablewrap">
+          <table class="breakdown" id="holiday-table">
+            <tbody id="holiday-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label for="i-hol-date">Add a holiday</label>
+          <input type="date" id="i-hol-date">
+        </div>
+        <div class="field">
+          <label for="i-hol-name">What it is</label>
+          <input type="text" id="i-hol-name" placeholder="Factory annual shutdown">
+        </div>
+      </div>
+      <div class="btnrow">
+        <button class="btn ghost" id="add-holiday" type="button">Add holiday</button>
+      </div>
+
+      <div class="field">
+        <label for="i-atrisk">Call an order at risk at or below <span class="hint">days of slack</span></label>
+        <div class="inp has-suf">
+          <span class="suf">days</span>
+          <input type="number" id="i-atrisk" min="1" max="365" step="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="btnrow">
+        <button class="btn ghost" id="save-settings" type="button">Save threshold</button>
+      </div>
+      <p class="hintline" id="cal-status" role="status"></p>
+      <div class="note bad" id="cal-error" hidden></div>
+    </section>
+
+    <!-- --------------------------------------------------- the chain editor -->
+    <section class="card">
+      <h2>Milestone chain</h2>
+      <p class="hintline">One named chain holds the whole model: the milestones, their lead times, what each one waits on, and who is chased when it slips. Copy it under a new name for a buyer who works differently.</p>
+
+      <div class="row2">
+        <div class="field">
+          <label for="i-chain-pick">Chain</label>
+          <select id="i-chain-pick"></select>
+        </div>
+        <div class="field">
+          <label for="i-chain-name">Name <span class="hint">rename to save a copy for one buyer</span></label>
+          <input type="text" id="i-chain-name">
+        </div>
+      </div>
+
+      <div class="tablewrap">
+        <table class="breakdown" id="chain-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Milestone</th>
+              <th>Owner</th>
+              <th class="num">Lead</th>
+              <th>Counted in</th>
+              <th>Waits on</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="chain-body"></tbody>
+        </table>
+      </div>
+
+      <div class="btnrow">
+        <button class="btn primary" id="save-chain" type="button">Save chain</button>
+        <button class="btn ghost" id="add-stage" type="button">Add a milestone</button>
+        <button class="btn ghost" id="copy-chain" type="button">Save as a copy</button>
+        <button class="btn ghost" id="reset-chain" type="button">Put the shipped chain back</button>
+        <button class="btn ghost danger" id="delete-chain" type="button">Remove this chain</button>
+      </div>
+      <p class="hintline" id="chain-status" role="status"></p>
+      <div class="note bad" id="chain-error" hidden></div>
+      <div class="note" id="chain-indicative"></div>
+    </section>
+
+    <!-- ------------------------------------------------------------- prose -->
+    <section class="prose">
+      <h2>How the dates are worked out</h2>
+      <p>Three passes over the milestone chain.</p>
+      <p><strong>Backwards from the ship date.</strong> The last milestone finishes on the ship date. Everything before it finishes the last day it can and still leave its successors their full lead time. Those are the planned dates, and they are the sheet you send out.</p>
+      <p><strong>Forwards from the purchase-order date.</strong> The same chain counted the other way gives the earliest each milestone could run. The gap between the two is that milestone's slack, and if the forward pass lands past the ship date <strong>the order cannot be made in the time it has been given</strong> — the tool says so, and by how many days.</p>
+      <p><strong>Forwards again from what actually happened.</strong> Where a completion date has been recorded it is used as it stands; everything after it is pushed to the first day it can now run, and nothing unfinished is allowed to sit in the past. That is what moves the inspection and the vessel booking when finishing runs late.</p>
+
+      <h2>Critical path and slack</h2>
+      <p>The critical path is traced, not guessed: from the milestone that sets the earliest possible ship date, back through whichever predecessor is the reason each one cannot start sooner. It always comes out as one connected chain from a milestone that waits on nothing to the one the ship date hangs on. Lose a day anywhere on it and you lose a day off the ship date.</p>
+      <p>Milestones off that chain have slack. Slack is shown in the milestone's own unit: working days for a factory stage, calendar days for transit, because that is the unit in which the days can actually be spent.</p>
+
+      <div class="note">
+        <p><strong>A backward plan has no spare days in it.</strong> Every date is a last possible date, so a milestone that finishes after its own date moves the ship date — unless the days the factory is shut happen to cover it. The slack figure tells you how much cushion the order was <em>booked</em> with, not how much you can afford to lose at a milestone.</p>
+        <p>The lead times this build starts with are trade practice for a mid-volume programme, not rules, not anybody's published standard, and not advice. They move with the buyer, the fabric, the season, the mill's order book and the shipping line. Replace every one of them with figures from your own last few orders before you plan against them.</p>
+      </div>
+
+      <details class="assumptions">
+        <summary>Assumptions, stated plainly</summary>
+        <ul>
+          <li>A milestone finishes before the next one starts. There is no overlap: a chain where sewing starts while cutting is still running should carry a shorter sewing lead time, or be split into two milestones.</li>
+          <li>A lead time counts the first day. A one-day milestone finishes the day it starts.</li>
+          <li>A milestone counted in working days never starts or finishes on a day the factory is shut. One counted in calendar days can.</li>
+          <li>A holiday falling on the weekly off costs one day, not two.</li>
+          <li>A recorded completion date is taken as it stands, even on a closed day: a shift may well have run, and the tool records what happened rather than correcting it.</li>
+          <li>A milestone due today is not yet overdue. It becomes overdue the morning after.</li>
+          <li>Without a purchase-order date the plan is still worked out, from the last day the order could have been placed, and no slack or feasibility figure is given.</li>
+        </ul>
+      </details>
+    </section>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Open MSME &middot; open-source tool for MSMEs in India &amp; the Philippines &middot; MIT</span>
+    <span id="foot-file">Runs on your computer. No accounts, no uploads, no telemetry.</span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

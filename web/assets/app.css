@@ -1,0 +1,59 @@
+/* Parts of this tool's interface that the shared kit does not cover. */
+
+.blockhead { margin: 26px 0 10px; font-size: 1.1rem; }
+.hintline { font-size: .82rem; color: var(--ink-3); margin: 10px 0 0; }
+.note.bad { border-left-color: var(--bad); color: var(--ink-2); }
+.btn.ghost.danger { color: var(--bad); }
+
+.tablewrap { overflow-x: auto; }
+.tablewrap .breakdown { min-width: 640px; }
+.breakdown.facts { min-width: 0; margin-top: 18px; }
+.breakdown th { font-size: .78rem; color: var(--ink-3); font-weight: 600; white-space: nowrap; }
+.breakdown td.mono, .breakdown td.num { font-family: var(--mono); font-size: .84rem; }
+.breakdown td .sub2 { display: block; font-size: .76rem; color: var(--ink-3); }
+.empty { color: var(--ink-3); font-size: .88rem; padding: 14px 2px; }
+
+/* status words and dots */
+.st { font-weight: 600; font-size: .82rem; white-space: nowrap; }
+.st::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 1px; }
+.st-late { color: var(--bad); }
+.st-late::before { background: var(--bad); }
+.st-at-risk { color: var(--warn); }
+.st-at-risk::before { background: var(--warn); }
+.st-on-track { color: var(--ok); }
+.st-on-track::before { background: var(--ok); }
+.st-done { color: var(--ink-3); }
+.st-done::before { background: var(--ink-3); }
+
+tr.is-critical td:first-child { border-left: 3px solid var(--tool); padding-left: 8px; }
+tr.is-overdue td.num.plan { color: var(--bad); }
+tr.row-pick { cursor: pointer; }
+tr.row-pick:hover td { background: var(--surface-2); }
+
+.crit { font-family: var(--mono); font-size: .68rem; color: var(--tool-text); border: 1px solid color-mix(in srgb, var(--tool) 35%, var(--line)); border-radius: 999px; padding: 1px 6px; margin-left: 6px; white-space: nowrap; }
+
+/* count tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; margin: 0 0 16px; }
+.tile { background: var(--surface-2); border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; }
+.tile .n { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.tile .l { font-size: .74rem; color: var(--ink-3); }
+.tile.late { border-left: 3px solid var(--bad); }
+.tile.late .n { color: var(--bad); }
+.tile.risk { border-left: 3px solid var(--warn); }
+.tile.risk .n { color: var(--warn); }
+.tile.ok { border-left: 3px solid var(--ok); }
+.tile.ok .n { color: var(--ok); }
+
+/* small inputs inside tables */
+.breakdown input[type=date], .breakdown input[type=text], .breakdown input[type=number], .breakdown select {
+  font-size: .84rem; padding: 6px 8px; border-radius: 7px; min-width: 7.5rem;
+}
+.breakdown input[type=number] { min-width: 4.5rem; }
+.breakdown td.act { white-space: nowrap; }
+.breakdown td.act .btn { padding: 5px 9px; font-size: .78rem; margin-left: 6px; }
+.breakdown .mini { font: inherit; font-size: .76rem; cursor: pointer; padding: 4px 8px; border-radius: 7px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink-2); }
+.breakdown .mini:hover { color: var(--ink); border-color: var(--ink-3); }
+.breakdown .mini.danger { color: var(--bad); }
+
+.warn-list { margin: 0 0 4px; }
+.busy { opacity: .55; }
